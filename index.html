@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSU! · Test Score Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb;
+  --bg2: #edeae1;
+  --ink: #1a1714;
+  --ink2: #3d3830;
+  --ink3: #7a7468;
+  --accent: #d4541a;
+  --accent2: #e8823e;
+  --accent-dim: rgba(212,84,26,0.08);
+  --gold: #c8a63e;
+  --border: rgba(26,23,20,0.1);
+  --border2: rgba(26,23,20,0.06);
+  --white: #faf8f4;
+  --card: #ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;}
+
+/* ===== LANG SWITCHER ===== */
+.lang-bar{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:flex-end;align-items:center;padding:0.6rem 2rem;background:rgba(245,242,235,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.lang-btn{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:none;color:var(--ink3);transition:all 0.2s;margin-left:6px;}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent);}
+.lang-btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+
+/* ===== SIDEBAR NAV ===== */
+.sidenav{position:fixed;left:2rem;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:1.5rem;}
+.sidenav-item{display:flex;align-items:center;gap:10px;cursor:pointer;opacity:0.35;transition:opacity 0.2s;}
+.sidenav-item:hover,.sidenav-item.active{opacity:1;}
+.sidenav-dot{width:8px;height:8px;border-radius:50%;background:var(--ink);transition:all 0.2s;flex-shrink:0;}
+.sidenav-item.active .sidenav-dot{background:var(--accent);transform:scale(1.4);}
+.sidenav-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap;}
+@media(max-width:900px){.sidenav{display:none;}}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 420px 4rem 10rem;position:relative;overflow:hidden;}
+@media(max-width:1200px){.hero{padding:8rem 6rem 4rem 10rem;}}
+@media(max-width:900px){.hero{padding:6rem 1.5rem 4rem;}}
+.hero-bg{position:absolute;inset:0;pointer-events:none;}
+.hero-circle{position:absolute;border-radius:50%;opacity:0.06;}
+.hero-circle-1{width:600px;height:600px;background:var(--accent);right:-100px;top:-150px;}
+.hero-circle-2{width:400px;height:400px;background:var(--gold);right:200px;bottom:-100px;}
+.hero-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:0.4;}
+
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;animation:fadeUp 0.8s ease both;}
+.hero-eyebrow-line{width:32px;height:1.5px;background:var(--accent);}
+
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(40px,5vw,72px);font-weight:800;line-height:1.05;letter-spacing:-0.02em;margin-bottom:2rem;animation:fadeUp 0.8s 0.1s ease both;}
+.hero-title em{font-style:normal;color:var(--accent);display:block;}
+.hero-title .tsu{font-size:0.55em;color:var(--ink3);font-weight:600;letter-spacing:0.05em;}
+
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--ink2);line-height:1.6;max-width:520px;margin-bottom:3rem;animation:fadeUp 0.8s 0.2s ease both;}
+
+.hero-cta-row{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp 0.8s 0.3s ease both;}
+.cta-primary{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:16px 32px;background:var(--accent);color:white;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.cta-primary:hover{background:var(--ink);transform:translateY(-2px);}
+.cta-secondary{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:16px 32px;background:none;color:var(--ink);border:1.5px solid var(--border);border-radius:6px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.cta-secondary:hover{border-color:var(--accent);color:var(--accent);}
+
+.hero-stats{display:flex;gap:3rem;margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border);animation:fadeUp 0.8s 0.4s ease both;}
+.hero-stat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--ink);}
+.hero-stat-num span{color:var(--accent);}
+.hero-stat-label{font-size:12px;color:var(--ink3);margin-top:2px;}
+
+.hero-score-badge{position:absolute;right:8%;top:40%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem 2rem;box-shadow:0 20px 60px rgba(0,0,0,0.08);animation:float 4s ease-in-out infinite;}
+@media(max-width:1100px){.hero-score-badge{display:none;}}
+.badge-label{font-size:11px;color:var(--ink3);font-family:'Syne',sans-serif;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;}
+.badge-score{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--accent);line-height:1;}
+.badge-max{font-size:18px;color:var(--ink3);font-weight:400;}
+.badge-sub{font-size:12px;color:var(--ink3);margin-top:4px;}
+.badge-bar{height:6px;background:var(--bg2);border-radius:99px;margin-top:1rem;overflow:hidden;}
+.badge-fill{height:100%;width:91.6%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:99px;}
+
+/* ===== SECTIONS SHARED ===== */
+section{padding:6rem 6rem 6rem 10rem;position:relative;}
+@media(max-width:900px){section{padding:4rem 1.5rem;}}
+.section-eyebrow{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:10px;}
+.section-eyebrow::before{content:'';width:24px;height:1.5px;background:var(--accent);}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(28px,3.5vw,48px);font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1rem;}
+.section-title em{font-style:normal;color:var(--accent);}
+
+/* ===== WHY SECTION ===== */
+.why-section{background:var(--ink);}
+.why-section .section-eyebrow{color:var(--accent2);}
+.why-section .section-eyebrow::before{background:var(--accent2);}
+.why-section .section-title{color:var(--bg);}
+.why-section .section-title em{color:var(--accent2);}
+.why-intro{font-size:18px;color:rgba(245,242,235,0.65);line-height:1.7;max-width:600px;margin-bottom:3rem;}
+
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;margin-bottom:3rem;}
+.why-card{background:rgba(255,255,255,0.03);padding:2rem;transition:background 0.2s;}
+.why-card:hover{background:rgba(255,255,255,0.06);}
+.why-card-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:0.1em;margin-bottom:1rem;}
+.why-card-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--bg);margin-bottom:0.5rem;}
+.why-card-text{font-size:13.5px;color:rgba(245,242,235,0.5);line-height:1.65;}
+
+.uni-strip{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;padding:1.5rem 2rem;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid rgba(255,255,255,0.06);}
+.uni-strip-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,242,235,0.3);white-space:nowrap;}
+.uni-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:rgba(245,242,235,0.55);white-space:nowrap;}
+
+/* ===== METHOD ===== */
+.method-section{background:var(--bg);}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:2rem;}
+@media(max-width:800px){.method-grid{grid-template-columns:1fr;}}
+.method-text{font-size:16px;color:var(--ink2);line-height:1.75;margin-bottom:1.5rem;}
+.method-highlight{background:var(--accent-dim);border-left:3px solid var(--accent);padding:1rem 1.25rem;border-radius:0 8px 8px 0;font-size:15px;font-weight:500;color:var(--ink);margin-bottom:2rem;}
+.method-steps{display:flex;flex-direction:column;gap:1px;background:var(--border);border-radius:10px;overflow:hidden;}
+.method-step{background:var(--card);padding:1.1rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;}
+.method-step-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-dim);padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;}
+.method-step-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.method-step-text{font-size:13px;color:var(--ink3);line-height:1.55;}
+.method-visual{background:var(--ink);border-radius:16px;padding:2.5rem;position:relative;overflow:hidden;}
+.method-visual-bg{position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(212,84,26,0.15),transparent 60%);}
+.method-sections{display:flex;flex-direction:column;gap:10px;}
+.msec{display:flex;align-items:center;gap:14px;}
+.msec-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:rgba(245,242,235,0.5);width:80px;flex-shrink:0;}
+.msec-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;}
+.msec-bar{height:100%;border-radius:99px;}
+.msec-score{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:rgba(245,242,235,0.7);width:40px;text-align:right;flex-shrink:0;}
+.method-visual-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:rgba(245,242,235,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.5rem;}
+
+/* ===== PRICING ===== */
+.pricing-section{background:var(--bg2);}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:2.5rem;max-width:800px;}
+@media(max-width:700px){.pricing-grid{grid-template-columns:1fr;}}
+.pricing-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:2.5rem;position:relative;transition:transform 0.2s,box-shadow 0.2s;}
+.pricing-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.08);}
+.pricing-card.featured{border-color:var(--accent);background:var(--ink);}
+.pricing-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:var(--accent);color:white;padding:4px 16px;border-radius:99px;white-space:nowrap;}
+.pricing-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;}
+.pricing-card.featured .pricing-name{color:rgba(245,242,235,0.5);}
+.pricing-price{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1;margin-bottom:0.25rem;}
+.pricing-card.featured .pricing-price{color:var(--bg);}
+.pricing-price sup{font-size:22px;vertical-align:top;margin-top:8px;}
+.pricing-price-sub{font-size:12px;color:var(--ink3);margin-bottom:1.5rem;}
+.pricing-card.featured .pricing-price-sub{color:rgba(245,242,235,0.4);}
+.pricing-desc{font-size:13.5px;color:var(--ink2);line-height:1.6;margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border);}
+.pricing-card.featured .pricing-desc{color:rgba(245,242,235,0.6);border-bottom-color:rgba(255,255,255,0.08);}
+.pricing-pros{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:2rem;}
+.pricing-pro{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink2);}
+.pricing-card.featured .pricing-pro{color:rgba(245,242,235,0.7);}
+.pro-check{width:18px;height:18px;border-radius:50%;background:var(--green-dim,rgba(76,175,125,0.12));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;}
+.pricing-card.featured .pro-check{background:rgba(76,175,125,0.2);}
+.pro-check-inner{color:#4caf7d;}
+.pricing-cta{width:100%;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:14px;border-radius:8px;cursor:pointer;border:none;transition:all 0.2s;}
+.pricing-card:not(.featured) .pricing-cta{background:var(--ink);color:var(--bg);}
+.pricing-card:not(.featured) .pricing-cta:hover{background:var(--accent);}
+.pricing-card.featured .pricing-cta{background:var(--accent);color:white;}
+.pricing-card.featured .pricing-cta:hover{background:var(--accent2);}
+
+/* ===== ABOUT ===== */
+.about-section{background:var(--bg);}
+.about-grid{display:grid;grid-template-columns:1fr 2fr;gap:5rem;align-items:start;margin-top:2rem;}
+@media(max-width:800px){.about-grid{grid-template-columns:1fr;gap:2rem;}}
+.about-avatar{width:100%;aspect-ratio:3/4;background:var(--bg2);border-radius:12px;position:relative;overflow:hidden;border:1px solid var(--border);}
+.about-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:80px;opacity:0.15;}
+.about-avatar-tag{position:absolute;bottom:1rem;left:1rem;right:1rem;background:rgba(26,23,20,0.85);backdrop-filter:blur(8px);border-radius:8px;padding:0.75rem 1rem;}
+.about-avatar-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--bg);}
+.about-avatar-sub{font-size:12px;color:rgba(245,242,235,0.55);margin-top:2px;}
+.about-score-pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(212,84,26,0.2);border-radius:99px;padding:4px 12px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--accent);margin-top:8px;}
+.about-text{font-size:16px;color:var(--ink2);line-height:1.8;margin-bottom:1.25rem;}
+.about-text strong{color:var(--ink);font-weight:600;}
+.about-quote{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1.4;border-left:3px solid var(--accent);padding-left:1.5rem;margin:2rem 0;}
+
+/* ===== FOOTER ===== */
+footer{background:var(--ink);padding:4rem 6rem 4rem 10rem;}
+@media(max-width:900px){footer{padding:3rem 1.5rem;}}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:3rem;flex-wrap:wrap;margin-bottom:3rem;}
+.footer-brand{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--bg);}
+.footer-brand span{color:var(--accent);}
+.footer-tagline{font-size:13px;color:rgba(245,242,235,0.4);margin-top:6px;}
+.footer-socials{display:flex;gap:10px;flex-wrap:wrap;}
+.social-btn{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(245,242,235,0.5);cursor:pointer;background:none;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.social-btn:hover{border-color:var(--accent);color:var(--accent);}
+.footer-contact{margin-top:1.5rem;}
+.footer-contact-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,242,235,0.3);margin-bottom:0.75rem;}
+.footer-contact-link{font-size:14px;color:rgba(245,242,235,0.6);text-decoration:none;transition:color 0.2s;display:block;margin-bottom:4px;}
+.footer-contact-link:hover{color:var(--accent);}
+.footer-feedback{margin-top:1.5rem;}
+.feedback-input-row{display:flex;gap:8px;margin-top:0.5rem;}
+.feedback-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:10px 14px;color:var(--bg);font-family:'Instrument Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+.feedback-input:focus{border-color:var(--accent);}
+.feedback-input::placeholder{color:rgba(245,242,235,0.25);}
+.feedback-btn{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:10px 18px;background:var(--accent);border:none;border-radius:6px;color:white;cursor:pointer;white-space:nowrap;transition:background 0.2s;}
+.feedback-btn:hover{background:var(--accent2);}
+.footer-bottom{padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:rgba(245,242,235,0.25);}
+
+/* ===== ONBOARDING PAGE ===== */
+.onboarding-page{display:none;min-height:100vh;background:var(--bg);padding:7rem 2rem 4rem;}
+.onboarding-inner{max-width:700px;margin:0 auto;}
+.ob-header{margin-bottom:3rem;text-align:center;}
+.ob-header h1{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.ob-header h1 em{color:var(--accent);font-style:normal;}
+.ob-header p{font-size:14px;color:var(--ink3);}
+.ob-package-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-dim);border:1px solid rgba(212,84,26,0.2);border-radius:99px;padding:6px 16px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:1.5rem;}
+
+.ob-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;}
+.ob-section-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin:2rem 0 1.25rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}
+.ob-section-title:first-child{margin-top:0;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.form-group{margin-bottom:1rem;}
+.form-label{font-size:12.5px;font-weight:500;color:var(--ink2);margin-bottom:5px;display:block;}
+.form-label .req{color:var(--accent);}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Instrument Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color 0.2s;appearance:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);}
+.form-textarea{min-height:90px;resize:vertical;}
+.form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7468' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+.radio-group{display:flex;flex-wrap:wrap;gap:8px;}
+.radio-opt{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;color:var(--ink2);transition:all 0.15s;user-select:none;}
+.radio-opt:hover{border-color:var(--accent);color:var(--accent);}
+.radio-opt input{display:none;}
+.radio-opt.selected{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);font-weight:500;}
+
+.ob-disclaimer{font-size:12px;color:var(--ink3);background:var(--bg2);border-radius:8px;padding:0.875rem 1rem;line-height:1.6;margin-top:1.5rem;display:flex;gap:8px;}
+.ob-disclaimer-icon{font-size:16px;flex-shrink:0;}
+
+.calendar-section{margin-top:1.5rem;background:var(--bg2);border-radius:10px;padding:1.25rem;}
+.calendar-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:0.75rem;}
+.calendar-note{font-size:12px;color:var(--ink3);margin-top:0.5rem;}
+.calendly-placeholder{background:var(--card);border:1.5px dashed var(--border);border-radius:8px;padding:2rem;text-align:center;color:var(--ink3);font-size:13px;}
+
+.ob-submit{width:100%;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:16px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;margin-top:2rem;transition:all 0.2s;}
+.ob-submit:hover{background:var(--ink);}
+.ob-back{font-size:13px;color:var(--ink3);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:1.5rem;transition:color 0.2s;}
+.ob-back:hover{color:var(--accent);}
+
+/* ===== PAYWALL ===== */
+.paywall-page{display:none;min-height:100vh;background:var(--bg);padding:7rem 2rem 4rem;text-align:center;}
+.paywall-inner{max-width:500px;margin:0 auto;}
+.paywall-icon{font-size:56px;margin-bottom:1rem;}
+.paywall-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;margin-bottom:0.5rem;}
+.paywall-sub{font-size:15px;color:var(--ink2);margin-bottom:2.5rem;line-height:1.6;}
+.paywall-price-box{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:2.5rem;margin-bottom:1.5rem;}
+.paywall-price-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.5rem;}
+.paywall-price-big{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--accent);line-height:1;}
+.paywall-price-brl{font-size:14px;color:var(--ink3);margin-top:4px;margin-bottom:1.5rem;}
+.paywall-pay-btn{width:100%;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:16px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;margin-bottom:0.75rem;transition:background 0.2s;}
+.paywall-pay-btn:hover{background:var(--ink);}
+.paywall-note{font-size:12px;color:var(--ink3);}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+
+.main-site{display:block;}
+</style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- SIDE NAV -->
+<nav class="sidenav" id="sidenav">
+  <div class="sidenav-item active" onclick="scrollTo('#hero')"><div class="sidenav-dot"></div><div class="sidenav-label" data-pt="Início" data-en="Home">Início</div></div>
+  <div class="sidenav-item" onclick="scrollTo('#why')"><div class="sidenav-dot"></div><div class="sidenav-label" data-pt="Por quê" data-en="Why TSU">Por quê</div></div>
+  <div class="sidenav-item" onclick="scrollTo('#method')"><div class="sidenav-dot"></div><div class="sidenav-label" data-pt="Método" data-en="Method">Método</div></div>
+  <div class="sidenav-item" onclick="scrollTo('#pricing')"><div class="sidenav-dot"></div><div class="sidenav-label" data-pt="Planos" data-en="Plans">Planos</div></div>
+  <div class="sidenav-item" onclick="scrollTo('#about')"><div class="sidenav-dot"></div><div class="sidenav-label" data-pt="Sobre" data-en="About">Sobre</div></div>
+</nav>
+
+<!-- ========== MAIN SITE ========== -->
+<div class="main-site" id="main-site">
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"><div class="hero-circle hero-circle-1"></div><div class="hero-circle hero-circle-2"></div><div class="hero-grain"></div></div>
+  <div class="hero-eyebrow"><span class="hero-eyebrow-line"></span><span data-pt="Preparação para o TOEFL" data-en="TOEFL Preparation">Preparação para o TOEFL</span></div>
+  <h1 class="hero-title">
+    <span class="tsu">TSU!</span>
+    <em data-pt="Seu score," data-en="Your score,">Seu score,</em>
+    <span data-pt="sua conquista." data-en="your achievement.">sua conquista.</span>
+  </h1>
+  <p class="hero-sub" data-pt="Preparação dinâmica e personalizada para o TOEFL. Porque alcançar seus objetivos não deveria depender do seu orçamento." data-en="Dynamic, personalized TOEFL preparation. Because reaching your goals shouldn't depend on your budget.">Preparação dinâmica e personalizada para o TOEFL. Porque alcançar seus objetivos não deveria depender do seu orçamento.</p>
+  <div class="hero-cta-row">
+    <a class="cta-primary" href="#pricing" onclick="smoothTo('pricing')" data-pt="Ver planos" data-en="See plans">Ver planos</a>
+    <a class="cta-secondary" href="#method" onclick="smoothTo('method')" data-pt="Como funciona" data-en="How it works">Como funciona</a>
+  </div>
+  <div class="hero-stats">
+    <div><div class="hero-stat-num">110<span>/120</span></div><div class="hero-stat-label" data-pt="Score do fundador" data-en="Founder's score">Score do fundador</div></div>
+    <div><div class="hero-stat-num">2<span data-pt="dias" data-en="days">dias</span></div><div class="hero-stat-label" data-pt="de preparação" data-en="of preparation">de preparação</div></div>
+    <div><div class="hero-stat-num"><span>$</span>5</div><div class="hero-stat-label" data-pt="para começar" data-en="to get started">para começar</div></div>
+  </div>
+  <div class="hero-score-badge">
+    <div class="badge-label" data-pt="Score obtido" data-en="Score achieved">Score obtido</div>
+    <div class="badge-score">110<span class="badge-max">/120</span></div>
+    <div class="badge-sub" data-pt="TOEFL iBT · 2 dias de prep" data-en="TOEFL iBT · 2 days of prep">TOEFL iBT · 2 dias de prep</div>
+    <div class="badge-bar"><div class="badge-fill"></div></div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-section" id="why">
+  <div class="section-eyebrow" data-pt="Por que o TOEFL?" data-en="Why TOEFL?">Por que o TOEFL?</div>
+  <h2 class="section-title"><span data-pt="Um score que" data-en="A score that">Um score que</span><br><em data-pt="abre portas." data-en="opens doors.">abre portas.</em></h2>
+  <p class="why-intro" data-pt="O TOEFL é aceito por mais de 11.000 universidades em 160 países. É o passaporte para os melhores programas do mundo · e para oportunidades profissionais internacionais." data-en="TOEFL is accepted by over 11,000 universities in 160 countries. It's the passport to the world's best programs · and to international career opportunities.">O TOEFL é aceito por mais de 11.000 universidades em 160 países. É o passaporte para os melhores programas do mundo · e para oportunidades profissionais internacionais.</p>
+  <div class="why-grid">
+    <div class="why-card"><div class="why-card-num">01</div><div class="why-card-title" data-pt="Acesso global" data-en="Global access">Acesso global</div><div class="why-card-text" data-pt="Harvard, Oxford, HEC Paris, Bocconi, Sciences Po · todas aceitam o TOEFL. Um único teste, mundo inteiro de possibilidades." data-en="Harvard, Oxford, HEC Paris, Bocconi, Sciences Po · all accept TOEFL. One test, an entire world of possibilities.">Harvard, Oxford, HEC Paris, Bocconi, Sciences Po · todas aceitam o TOEFL. Um único teste, mundo inteiro de possibilidades.</div></div>
+    <div class="why-card"><div class="why-card-num">02</div><div class="why-card-title" data-pt="Mercado de trabalho" data-en="Job market">Mercado de trabalho</div><div class="why-card-text" data-pt="Empresas multinacionais exigem comprovação de proficiência. Um bom score é diferencial competitivo direto no seu currículo." data-en="Multinational companies require proof of proficiency. A strong score is a direct competitive advantage on your resume.">Empresas multinacionais exigem comprovação de proficiência. Um bom score é diferencial competitivo direto no seu currículo.</div></div>
+    <div class="why-card"><div class="why-card-num">03</div><div class="why-card-title" data-pt="Visto e imigração" data-en="Visa & immigration">Visto e imigração</div><div class="why-card-text" data-pt="Países como EUA, Canadá, Austrália e Reino Unido aceitam o TOEFL para processos de visto de estudante e residência permanente." data-en="Countries like the USA, Canada, Australia and UK accept TOEFL for student visa and permanent residence processes.">Países como EUA, Canadá, Austrália e Reino Unido aceitam o TOEFL para processos de visto de estudante e residência permanente.</div></div>
+    <div class="why-card"><div class="why-card-num">04</div><div class="why-card-title" data-pt="Confiança comprovada" data-en="Proven confidence">Confiança comprovada</div><div class="why-card-text" data-pt="Saber que o seu inglês foi certificado internacionalmente muda como você se apresenta · em entrevistas, candidaturas e networking." data-en="Knowing your English is internationally certified changes how you present yourself · in interviews, applications and networking.">Saber que o seu inglês foi certificado internacionalmente muda como você se apresenta · em entrevistas, candidaturas e networking.</div></div>
+  </div>
+  <div class="uni-strip">
+    <div class="uni-strip-label" data-pt="Aceito em" data-en="Accepted at">Aceito em</div>
+    <div class="uni-name">Harvard</div><div class="uni-name">MIT</div><div class="uni-name">HEC Paris</div><div class="uni-name">Bocconi</div><div class="uni-name">Sciences Po</div><div class="uni-name">Oxford</div><div class="uni-name">SKEMA</div><div class="uni-name">ESCP</div><div class="uni-name">LSE</div>
+  </div>
+</section>
+
+<!-- METHOD -->
+<section class="method-section" id="method">
+  <div class="section-eyebrow" data-pt="Nossa abordagem" data-en="Our approach">Nossa abordagem</div>
+  <h2 class="section-title"><span data-pt="O segredo não é" data-en="The secret isn't">O segredo não é</span><br><em data-pt="inglês perfeito." data-en="perfect English.">inglês perfeito.</em></h2>
+  <div class="method-grid">
+    <div>
+      <p class="method-text" data-pt="A maioria das pessoas acha que precisa de inglês acadêmico impecável para tirar um bom score no TOEFL. Não é verdade." data-en="Most people think they need flawless academic English to get a good TOEFL score. That's not true.">A maioria das pessoas acha que precisa de inglês acadêmico impecável para tirar um bom score no TOEFL. Não é verdade.</p>
+      <div class="method-highlight" data-pt="A chave é entender o formato do teste e saber responder cada tipo de exercício com precisão · isso vale mais do que um vocabulário perfeito." data-en="The key is understanding the test format and knowing how to answer each exercise type precisely · that's worth more than a perfect vocabulary.">A chave é entender o formato do teste e saber responder cada tipo de exercício com precisão · isso vale mais do que um vocabulário perfeito.</div>
+      <p class="method-text" data-pt="Nossa preparação é personalizada para o seu perfil: seu nível atual, seu objetivo de score, suas lacunas específicas e o tempo que você tem disponível. Sem conteúdo genérico. Sem desperdício." data-en="Our preparation is personalized to your profile: your current level, your score goal, your specific gaps, and the time you have available. No generic content. No waste.">Nossa preparação é personalizada para o seu perfil: seu nível atual, seu objetivo de score, suas lacunas específicas e o tempo que você tem disponível. Sem conteúdo genérico. Sem desperdício.</p>
+      <div class="method-steps">
+        <div class="method-step"><div class="method-step-num">01</div><div><div class="method-step-title" data-pt="Diagnóstico" data-en="Diagnosis">Diagnóstico</div><div class="method-step-text" data-pt="Formulário de onboarding para entender seu perfil completo." data-en="Onboarding form to understand your complete profile.">Formulário de onboarding para entender seu perfil completo.</div></div></div>
+        <div class="method-step"><div class="method-step-num">02</div><div><div class="method-step-title" data-pt="Plano personalizado" data-en="Personalized plan">Plano personalizado</div><div class="method-step-text" data-pt="Conteúdo e exercícios adaptados ao seu nível e objetivo." data-en="Content and exercises adapted to your level and goal.">Conteúdo e exercícios adaptados ao seu nível e objetivo.</div></div></div>
+        <div class="method-step"><div class="method-step-num">03</div><div><div class="method-step-title" data-pt="Prática com mock tests" data-en="Practice with mock tests">Prática com mock tests</div><div class="method-step-text" data-pt="Simulados em condições reais para eliminar surpresas no dia do teste." data-en="Simulated tests in real conditions to eliminate surprises on test day.">Simulados em condições reais para eliminar surpresas no dia do teste.</div></div></div>
+        <div class="method-step"><div class="method-step-num">04</div><div><div class="method-step-title" data-pt="Score Up!" data-en="Score Up!">Score Up!</div><div class="method-step-text" data-pt="Chegue no dia do teste com confiança e método." data-en="Arrive on test day with confidence and method.">Chegue no dia do teste com confiança e método.</div></div></div>
+      </div>
+    </div>
+    <div class="method-visual">
+      <div class="method-visual-bg"></div>
+      <div class="method-visual-title" data-pt="Score alvo por seção" data-en="Target score by section">Score alvo por seção</div>
+      <div class="method-sections">
+        <div class="msec"><div class="msec-label">Reading</div><div class="msec-bar-wrap"><div class="msec-bar" style="width:73%;background:var(--blue,#5b9bd5);"></div></div><div class="msec-score">22/30</div></div>
+        <div class="msec"><div class="msec-label">Listening</div><div class="msec-bar-wrap"><div class="msec-bar" style="width:73%;background:#4caf7d;"></div></div><div class="msec-score">22/30</div></div>
+        <div class="msec"><div class="msec-label">Speaking</div><div class="msec-bar-wrap"><div class="msec-bar" style="width:56%;background:var(--accent);"></div></div><div class="msec-score">17/30</div></div>
+        <div class="msec"><div class="msec-label">Writing</div><div class="msec-bar-wrap"><div class="msec-bar" style="width:63%;background:var(--purple,#9b7fe8);"></div></div><div class="msec-score">19/30</div></div>
+      </div>
+      <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-family:'Syne',sans-serif;font-size:12px;color:rgba(245,242,235,0.4);text-transform:uppercase;letter-spacing:0.08em;" data-pt="Total" data-en="Total">Total</div>
+        <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--accent);">80<span style="font-size:16px;color:rgba(245,242,235,0.4);">/120</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-eyebrow" data-pt="Planos" data-en="Plans">Planos</div>
+  <h2 class="section-title"><span data-pt="Invista no" data-en="Invest in">Invista no</span><br><em data-pt="seu futuro." data-en="your future.">seu futuro.</em></h2>
+  <p style="font-size:15px;color:var(--ink2);max-width:500px;margin-bottom:0.5rem;" data-pt="Preparação de qualidade acessível para todos. Porque suas ambições não deveriam ter preço." data-en="Quality preparation accessible to everyone. Because your ambitions shouldn't have a price tag.">Preparação de qualidade acessível para todos. Porque suas ambições não deveriam ter preço.</p>
+  <div class="pricing-grid">
+    <!-- SMART -->
+    <div class="pricing-card">
+      <div class="pricing-name" data-pt="Smart" data-en="Smart">Smart</div>
+      <div class="pricing-price"><sup>$</sup>5</div>
+      <div class="pricing-price-sub" data-pt="~R$30 · pagamento único" data-en="~R$30 · one-time payment">~R$30 · pagamento único</div>
+      <div class="pricing-desc" data-pt="Personalizada para seus objetivos e eficaz para quem quer performar sem comprometer o orçamento. Acesso completo à plataforma com exercícios e mock tests adaptados ao seu perfil." data-en="Personalized to your goals and effective for those who want to perform without breaking the bank. Full platform access with exercises and mock tests adapted to your profile.">Personalizada para seus objetivos e eficaz para quem quer performar sem comprometer o orçamento. Acesso completo à plataforma com exercícios e mock tests adaptados ao seu perfil.</div>
+      <ul class="pricing-pros">
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Onboarding completo com análise do seu perfil" data-en="Complete onboarding with profile analysis">Onboarding completo com análise do seu perfil</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Plataforma interativa com exercícios adaptados" data-en="Interactive platform with adapted exercises">Plataforma interativa com exercícios adaptados</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Mock tests em condições reais de prova" data-en="Mock tests in real exam conditions">Mock tests em condições reais de prova</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Plano de estudos de 7 dias personalizado" data-en="Personalized 7-day study plan">Plano de estudos de 7 dias personalizado</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Guia completo de estratégias por seção" data-en="Complete strategy guide by section">Guia completo de estratégias por seção</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Acesso vitalício ao conteúdo" data-en="Lifetime access to content">Acesso vitalício ao conteúdo</span></li>
+      </ul>
+      <button class="pricing-cta" onclick="openOnboarding('smart')" data-pt="Começar agora" data-en="Start now">Começar agora</button>
+    </div>
+    <!-- SMART PREMIUM -->
+    <div class="pricing-card featured">
+      <div class="pricing-badge" data-pt="Mais completo" data-en="Most complete">Mais completo</div>
+      <div class="pricing-name" data-pt="Smart Premium" data-en="Smart Premium">Smart Premium</div>
+      <div class="pricing-price" style="color:var(--accent2);"><sup>$</sup>12</div>
+      <div class="pricing-price-sub" data-pt="~R$70 · pagamento único" data-en="~R$70 · one-time payment">~R$70 · pagamento único</div>
+      <div class="pricing-desc" data-pt="Para quem quer levar a personalização ao próximo nível. Uma sessão de 45 minutos com um membro da equipe para entender suas lacunas e construir a preparação mais intuitiva e adaptada possível." data-en="For those who want to take personalization to the next level. A 45-minute session with a team member to understand your gaps and build the most intuitive and adapted preparation possible.">Para quem quer levar a personalização ao próximo nível. Uma sessão de 45 minutos com um membro da equipe para entender suas lacunas e construir a preparação mais intuitiva e adaptada possível.</div>
+      <ul class="pricing-pros">
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Tudo do plano Smart" data-en="Everything in Smart plan">Tudo do plano Smart</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Sessão individual de 45 min com especialista" data-en="45-min individual session with specialist">Sessão individual de 45 min com especialista</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Diagnóstico detalhado das suas lacunas" data-en="Detailed diagnosis of your gaps">Diagnóstico detalhado das suas lacunas</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Plano personalizado entregue em 48h" data-en="Personalized plan delivered in 48h">Plano personalizado entregue em 48h</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Feedback personalizado no Speaking e Writing" data-en="Personalized feedback on Speaking and Writing">Feedback personalizado no Speaking e Writing</span></li>
+        <li class="pricing-pro"><span class="pro-check"><span class="pro-check-inner">✓</span></span><span data-pt="Suporte por email durante a preparação" data-en="Email support during preparation">Suporte por email durante a preparação</span></li>
+      </ul>
+      <button class="pricing-cta" onclick="openOnboarding('premium')" data-pt="Escolher Premium" data-en="Choose Premium">Escolher Premium</button>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="section-eyebrow" data-pt="Quem sou eu" data-en="Who am I">Quem sou eu</div>
+  <h2 class="section-title"><span data-pt="Por trás do" data-en="Behind">Por trás do</span><br><em>TSU!</em></h2>
+  <div class="about-grid">
+    <div>
+      <div class="about-avatar">
+        <div class="about-avatar-placeholder">👤</div>
+        <div class="about-avatar-tag">
+          <div class="about-avatar-name">Pierre-Louis Jay</div>
+          <div class="about-avatar-sub" data-pt="Franco-brasileiro · Relações Internacionais" data-en="Franco-Brazilian · International Relations">Franco-brasileiro · Relações Internacionais</div>
+          <div class="about-score-pill">TOEFL 110/120</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="about-quote" data-pt='"Acredito que todos deveríamos poder alcançar nossas ambições independentemente do nosso orçamento."' data-en='"I believe we should all be able to reach our ambitions regardless of our budget."'>"Acredito que todos deveríamos poder alcançar nossas ambições independentemente do nosso orçamento."</div>
+      <p class="about-text" data-pt="Sou franco-brasileiro, cresci entre a França, Bulgária e o Brasil. Após concluir minha graduação em Relações Internacionais no UniCEUB em Brasília, decidi continuar meus estudos na Europa · onde estão os melhores programas e as maiores oportunidades de carreira." data-en="I'm Franco-Brazilian, raised between France, Bulgaria, and Brazil. After completing my undergraduate degree in International Relations at UniCEUB in Brasília, I decided to continue my studies in Europe · where the best programs and greatest career opportunities are.">Sou franco-brasileiro, cresci entre a França, Bulgária e o Brasil. Após concluir minha graduação em Relações Internacionais no UniCEUB em Brasília, decidi continuar meus estudos na Europa · onde estão os melhores programas e as maiores oportunidades de carreira.</p>
+      <p class="about-text" data-pt="Para isso, precisei passar o TOEFL. O custo do teste somado às candidaturas e às preparações disponíveis no mercado foi desanimador. Mesmo assim, me preparei em apenas dois dias e obtive <strong>110/120</strong> · e nesse processo percebi todos os defeitos das preparações existentes." data-en="For that, I needed to pass the TOEFL. The cost of the test added to the applications and the available prep options on the market was discouraging. Even so, I prepared in just two days and got <strong>110/120</strong> · and in the process I noticed all the flaws in existing prep courses.">Para isso, precisei passar o TOEFL. O custo do teste somado às candidaturas e às preparações disponíveis no mercado foi desanimador. Mesmo assim, me preparei em apenas dois dias e obtive <strong>110/120</strong> · e nesse processo percebi todos os defeitos das preparações existentes.</p>
+      <p class="about-text" data-pt="A ideia de que outras pessoas não pudessem se preparar adequadamente por falta de recursos me revoltou. Lancei o TSU! para oferecer uma alternativa real · mais barata, mais eficaz, e acessível tanto para iniciantes quanto para quem já tem um bom nível. Porque todos merecemos alcançar nossas ambições, independentemente do nosso orçamento." data-en="The idea that other people couldn't prepare properly due to lack of resources made me angry. I launched TSU! to offer a real alternative · cheaper, more effective, and accessible to both beginners and those who already have a strong level. Because we all deserve to reach our ambitions, regardless of our budget.">A ideia de que outras pessoas não pudessem se preparar adequadamente por falta de recursos me revoltou. Lancei o TSU! para oferecer uma alternativa real · mais barata, mais eficaz, e acessível tanto para iniciantes quanto para quem já tem um bom nível. Porque todos merecemos alcançar nossas ambições, independentemente do nosso orçamento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">TSU<span>!</span></div>
+      <div class="footer-tagline" data-pt="Test Score Up · tsu-prep.com" data-en="Test Score Up · tsu-prep.com">Test Score Up · tsu-prep.com</div>
+      <div class="footer-socials" style="margin-top:1.25rem;">
+        <a class="social-btn" href="#" target="_blank">Instagram</a>
+        <a class="social-btn" href="#" target="_blank">TikTok</a>
+        <a class="social-btn" href="#" target="_blank">YouTube</a>
+        <a class="social-btn" href="#" target="_blank">X / Twitter</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-contact">
+        <div class="footer-contact-title" data-pt="Contato" data-en="Contact">Contato</div>
+        <a class="footer-contact-link" href="mailto:contact@tsu-prep.com">contact@tsu-prep.com</a>
+      </div>
+      <div class="footer-feedback" style="margin-top:1.5rem;">
+        <div class="footer-contact-title" data-pt="Feedback & sugestões" data-en="Feedback & suggestions">Feedback & sugestões</div>
+        <p style="font-size:12px;color:rgba(245,242,235,0.35);margin-bottom:0.5rem;" data-pt="Estamos sempre buscando melhorar. Sua opinião conta." data-en="We're always looking to improve. Your opinion counts.">Estamos sempre buscando melhorar. Sua opinião conta.</p>
+        <div class="feedback-input-row">
+          <input class="feedback-input" type="text" placeholder="" id="feedback-input" data-placeholder-pt="Deixe seu feedback..." data-placeholder-en="Leave your feedback...">
+          <button class="feedback-btn" onclick="submitFeedback()" data-pt="Enviar" data-en="Send">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 TSU! · Test Score Up. Pierre-Louis Jay.</div>
+    <div class="footer-copy" data-pt="TOEFL® é marca registrada da ETS. TSU! não tem afiliação com a ETS." data-en="TOEFL® is a registered trademark of ETS. TSU! is not affiliated with ETS.">TOEFL® é marca registrada da ETS. TSU! não tem afiliação com a ETS.</div>
+  </div>
+</footer>
+
+</div><!-- end main-site -->
+
+<!-- ========== ONBOARDING PAGE ========== -->
+<div class="onboarding-page" id="onboarding-page">
+  <div class="onboarding-inner">
+    <button class="ob-back" onclick="closeOnboarding()">← <span data-pt="Voltar" data-en="Back">Voltar</span></button>
+    <div class="ob-header">
+      <div class="ob-package-badge" id="ob-badge">Smart</div>
+      <h1 data-pt="Queremos te <em>conhecer.</em>" data-en="We want to <em>know you.</em>">Queremos te <em>conhecer.</em></h1>
+      <p data-pt="Leva menos de 10 minutos. Suas respostas moldam toda a sua preparação." data-en="Takes less than 10 minutes. Your answers shape your entire preparation.">Leva menos de 10 minutos. Suas respostas moldam toda a sua preparação.</p>
+    </div>
+
+    <div class="ob-form">
+      <!-- PERSONAL -->
+      <div class="ob-section-title" data-pt="Informações pessoais" data-en="Personal information">Informações pessoais</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label"><span data-pt="Nome completo" data-en="Full name">Nome completo</span> <span class="req">*</span></label><input class="form-input" type="text" id="f-name"></div>
+        <div class="form-group"><label class="form-label"><span data-pt="Idade" data-en="Age">Idade</span> <span class="req">*</span></label><input class="form-input" type="number" id="f-age" min="14" max="80"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><span data-pt="Gênero" data-en="Gender">Gênero</span></label>
+          <div class="radio-group" id="gender-group">
+            <label class="radio-opt" onclick="selectRadio(this,'gender-group')"><input type="radio" name="gender" value="M"><span data-pt="Masculino" data-en="Male">Masculino</span></label>
+            <label class="radio-opt" onclick="selectRadio(this,'gender-group')"><input type="radio" name="gender" value="F"><span data-pt="Feminino" data-en="Female">Feminino</span></label>
+            <label class="radio-opt" onclick="selectRadio(this,'gender-group')"><input type="radio" name="gender" value="NB"><span data-pt="Não-binário" data-en="Non-binary">Não-binário</span></label>
+            <label class="radio-opt" onclick="selectRadio(this,'gender-group')"><input type="radio" name="gender" value="X"><span data-pt="Outro" data-en="Other">Outro</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label"><span data-pt="Email de contato" data-en="Contact email">Email de contato</span> <span class="req">*</span></label><input class="form-input" type="email" id="f-email"></div>
+        <div class="form-group"><label class="form-label"><span data-pt="Telefone / WhatsApp" data-en="Phone / WhatsApp">Telefone / WhatsApp</span></label><input class="form-input" type="tel" id="f-phone"></div>
+      </div>
+
+      <!-- ENGLISH -->
+      <div class="ob-section-title" data-pt="Seu inglês" data-en="Your English">Seu inglês</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><span data-pt="Anos falando inglês" data-en="Years speaking English">Anos falando inglês</span> <span class="req">*</span></label>
+          <select class="form-select" id="f-years">
+            <option value="" data-pt="Selecione" data-en="Select">Selecione</option>
+            <option value="0-1">0 – 1 ano</option><option value="2-3">2 – 3 anos</option>
+            <option value="4-6">4 – 6 anos</option><option value="7-10">7 – 10 anos</option>
+            <option value="10+">10+ anos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span data-pt="Nível atual estimado" data-en="Estimated current level">Nível atual estimado</span> <span class="req">*</span></label>
+          <div class="radio-group" id="level-group">
+            <label class="radio-opt" onclick="selectRadio(this,'level-group')"><input type="radio" name="level" value="A1">A1</label>
+            <label class="radio-opt" onclick="selectRadio(this,'level-group')"><input type="radio" name="level" value="A2">A2</label>
+            <label class="radio-opt" onclick="selectRadio(this,'level-group')"><input type="radio" name="level" value="B1">B1</label>
+            <label class="radio-opt" onclick="selectRadio(this,'level-group')"><input type="radio" name="level" value="B2">B2</label>
+            <label class="radio-opt" onclick="selectRadio(this,'level-group')"><input type="radio" name="level" value="C1">C1</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOEFL GOALS -->
+      <div class="ob-section-title" data-pt="Objetivos TOEFL" data-en="TOEFL Goals">Objetivos TOEFL</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><span data-pt="Score mínimo desejado" data-en="Minimum desired score">Score mínimo desejado</span> <span class="req">*</span></label>
+          <select class="form-select" id="f-score">
+            <option value="">Selecione</option>
+            <option value="60">60 – 70</option><option value="71">71 – 80</option>
+            <option value="81">81 – 90</option><option value="91">91 – 100</option>
+            <option value="101">101 – 110</option><option value="111">111 – 120</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span data-pt="Finalidade do teste" data-en="Purpose of the test">Finalidade do teste</span> <span class="req">*</span></label>
+          <select class="form-select" id="f-purpose">
+            <option value="">Selecione</option>
+            <option data-pt="Candidatura a universidade" data-en="University application">Candidatura a universidade</option>
+            <option data-pt="Visto / imigração" data-en="Visa / immigration">Visto / imigração</option>
+            <option data-pt="Oportunidade profissional" data-en="Professional opportunity">Oportunidade profissional</option>
+            <option data-pt="Certificação pessoal" data-en="Personal certification">Certificação pessoal</option>
+            <option data-pt="Outro" data-en="Other">Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><span data-pt="Prazo até o teste" data-en="Time before the test">Prazo até o teste</span> <span class="req">*</span></label>
+          <select class="form-select" id="f-deadline">
+            <option value="">Selecione</option>
+            <option data-pt="Menos de 1 semana" data-en="Less than 1 week">Menos de 1 semana</option>
+            <option data-pt="1 – 2 semanas" data-en="1 – 2 weeks">1 – 2 semanas</option>
+            <option data-pt="2 – 4 semanas" data-en="2 – 4 weeks">2 – 4 semanas</option>
+            <option data-pt="1 – 3 meses" data-en="1 – 3 months">1 – 3 meses</option>
+            <option data-pt="Mais de 3 meses" data-en="More than 3 months">Mais de 3 meses</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span data-pt="Horas disponíveis por dia" data-en="Hours available per day">Horas disponíveis por dia</span> <span class="req">*</span></label>
+          <select class="form-select" id="f-hours">
+            <option value="">Selecione</option>
+            <option>0.5h</option><option>1h</option><option>2h</option>
+            <option>3h</option><option>4h+</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="ob-section-title" data-pt="Seu perfil" data-en="Your profile">Seu perfil</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label"><span data-pt="Pontos fortes em inglês" data-en="English strengths">Pontos fortes em inglês</span></label><textarea class="form-textarea" id="f-strengths" rows="3" data-placeholder-pt="Ex: leitura, vocabulário..." data-placeholder-en="E.g.: reading, vocabulary..."></textarea></div>
+        <div class="form-group"><label class="form-label"><span data-pt="Pontos fracos em inglês" data-en="English weaknesses">Pontos fracos em inglês</span></label><textarea class="form-textarea" id="f-weaknesses" rows="3" data-placeholder-pt="Ex: speaking, gramática..." data-placeholder-en="E.g.: speaking, grammar..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label"><span data-pt="Um hobby seu" data-en="A hobby of yours">Um hobby seu</span></label><input class="form-input" type="text" id="f-hobby" data-placeholder-pt="Ex: futebol, leitura..." data-placeholder-en="E.g.: football, reading..."></div>
+        <div class="form-group"><label class="form-label"><span data-pt="Algo que não gosta de fazer" data-en="Something you dislike doing">Algo que não gosta de fazer</span></label><input class="form-input" type="text" id="f-dislike" data-placeholder-pt="Ex: matemática, acordar cedo..." data-placeholder-en="E.g.: maths, waking up early..."></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span data-pt="Como nos conheceu?" data-en="How did you find us?">Como nos conheceu?</span> <span class="req">*</span></label>
+        <div class="radio-group" id="source-group">
+          <label class="radio-opt" onclick="selectRadio(this,'source-group')"><input type="radio" name="source" value="instagram">Instagram</label>
+          <label class="radio-opt" onclick="selectRadio(this,'source-group')"><input type="radio" name="source" value="tiktok">TikTok</label>
+          <label class="radio-opt" onclick="selectRadio(this,'source-group')"><input type="radio" name="source" value="google"><span data-pt="Google" data-en="Google">Google</span></label>
+          <label class="radio-opt" onclick="selectRadio(this,'source-group')"><input type="radio" name="source" value="twitter">X / Twitter</label>
+          <label class="radio-opt" onclick="selectRadio(this,'source-group')"><input type="radio" name="source" value="family"><span data-pt="Família" data-en="Family">Família</span></label>
+          <label class="radio-opt" onclick="selectRadio(this,'source-group')"><input type="radio" name="source" value="friends"><span data-pt="Amigos" data-en="Friends">Amigos</span></label>
+          <label class="radio-opt" onclick="selectRadio(this,'source-group')"><input type="radio" name="source" value="other"><span data-pt="Outro" data-en="Other">Outro</span></label>
+        </div>
+      </div>
+
+      <!-- CALENDLY · PREMIUM ONLY -->
+      <div class="calendar-section" id="calendly-section" style="display:none;">
+        <div class="calendar-title" data-pt="Agende sua sessão · Smart Premium" data-en="Schedule your session · Smart Premium">Agende sua sessão · Smart Premium</div>
+        <div class="calendly-placeholder">
+          <div style="font-size:24px;margin-bottom:0.5rem;">📅</div>
+          <div data-pt="Widget do Calendly será integrado aqui." data-en="Calendly widget will be integrated here.">Widget do Calendly será integrado aqui.</div>
+          <div style="font-size:12px;margin-top:4px;opacity:0.6;" data-pt="Integre com: calendly.com/seulink" data-en="Integrate with: calendly.com/yourlink">Integre com: calendly.com/seulink</div>
+        </div>
+        <div class="calendar-note" data-pt="⚠ Esta escolha não é definitiva. O horário poderá ser confirmado ou alterado após o pagamento." data-en="⚠ This choice is not final. The time can be confirmed or changed after payment.">⚠ Esta escolha não é definitiva. O horário poderá ser confirmado ou alterado após o pagamento.</div>
+      </div>
+
+      <!-- DISCLAIMER -->
+      <div class="ob-disclaimer">
+        <div class="ob-disclaimer-icon">🔒</div>
+        <div data-pt="Suas informações serão utilizadas exclusivamente para fins de personalização da sua preparação, oferecendo a melhor experiência possível com base nas suas respostas. Nenhum dado será compartilhado com terceiros." data-en="Your information will be used exclusively for personalization purposes to offer the best possible experience based on your answers. No data will be shared with third parties.">Suas informações serão utilizadas exclusivamente para fins de personalização da sua preparação, oferecendo a melhor experiência possível com base nas suas respostas. Nenhum dado será compartilhado com terceiros.</div>
+      </div>
+
+      <button class="ob-submit" onclick="submitOnboarding()" data-pt="Continuar para o pagamento →" data-en="Continue to payment →">Continuar para o pagamento →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAYWALL PAGE ========== -->
+<div class="paywall-page" id="paywall-page">
+  <div class="paywall-inner">
+    <button class="ob-back" onclick="closePaywall()" style="justify-content:center;margin:0 auto 2rem;">← <span data-pt="Voltar ao formulário" data-en="Back to form">Voltar ao formulário</span></button>
+    <div class="paywall-icon">🚀</div>
+    <h2 class="paywall-title" data-pt="Quase lá!" data-en="Almost there!">Quase lá!</h2>
+    <p class="paywall-sub" data-pt="Seu perfil está pronto. Um passo e você terá acesso à sua preparação personalizada." data-en="Your profile is ready. One step and you'll have access to your personalized preparation.">Seu perfil está pronto. Um passo e você terá acesso à sua preparação personalizada.</p>
+    <div class="paywall-price-box" id="paywall-box">
+      <div class="paywall-price-name" id="paywall-plan-name">Smart</div>
+      <div class="paywall-price-big" id="paywall-price">$5</div>
+      <div class="paywall-price-brl" id="paywall-brl">~R$30 · pagamento único</div>
+      <button class="paywall-pay-btn" data-pt="Pagar com Pix / Cartão (Brasil)" data-en="Pay with Pix / Card (Brazil)">Pagar com Pix / Cartão (Brasil)</button>
+      <button class="paywall-pay-btn" style="background:var(--ink);margin-top:0;" data-pt="Pay with PayPal / Card (International)" data-en="Pay with PayPal / Card (International)">Pay with PayPal / Card (International)</button>
+    </div>
+    <div class="paywall-note" data-pt="🔒 Pagamento seguro. Acesso imediato após confirmação." data-en="🔒 Secure payment. Immediate access after confirmation.">🔒 Pagamento seguro. Acesso imediato após confirmação.</div>
+  </div>
+</div>
+
+<script>
+// ===== LANG =====
+let currentLang='pt';
+function setLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-'+lang+']').forEach(el=>{
+    const html=el.getAttribute('data-'+lang);
+    if(html)el.innerHTML=html;
+  });
+  document.querySelectorAll('[data-placeholder-'+lang+']').forEach(el=>{
+    el.placeholder=el.getAttribute('data-placeholder-'+lang);
+  });
+  document.querySelectorAll('select option[data-'+lang+']').forEach(opt=>{
+    opt.textContent=opt.getAttribute('data-'+lang);
+  });
+  document.querySelectorAll('#feedback-input').forEach(el=>{
+    el.placeholder=el.getAttribute('data-placeholder-'+lang)||el.placeholder;
+  });
+}
+
+// ===== SCROLL =====
+function smoothTo(id){
+  event.preventDefault();
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+function scrollTo(sel){
+  const el=document.querySelector(sel);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+}
+
+// ===== SIDENAV ACTIVE =====
+const sections=['hero','why','method','pricing','about'];
+window.addEventListener('scroll',()=>{
+  const scrollY=window.scrollY+200;
+  sections.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const navItems=document.querySelectorAll('.sidenav-item');
+    if(el.offsetTop<=scrollY&&el.offsetTop+el.offsetHeight>scrollY){
+      navItems.forEach(n=>n.classList.remove('active'));
+      if(navItems[i])navItems[i].classList.add('active');
+    }
+  });
+});
+
+// ===== ONBOARDING =====
+let selectedPackage='smart';
+function openOnboarding(pkg){
+  selectedPackage=pkg;
+  document.getElementById('main-site').style.display='none';
+  document.getElementById('onboarding-page').style.display='block';
+  document.getElementById('paywall-page').style.display='none';
+  document.getElementById('ob-badge').textContent=pkg==='premium'?'Smart Premium':'Smart';
+  document.getElementById('calendly-section').style.display=pkg==='premium'?'block':'none';
+  window.scrollTo({top:0});
+}
+function closeOnboarding(){
+  document.getElementById('main-site').style.display='block';
+  document.getElementById('onboarding-page').style.display='none';
+  window.scrollTo({top:0});
+}
+function closePaywall(){
+  document.getElementById('paywall-page').style.display='none';
+  document.getElementById('onboarding-page').style.display='block';
+  window.scrollTo({top:0});
+}
+
+function selectRadio(el,groupId){
+  document.querySelectorAll(`#${groupId} .radio-opt`).forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function submitOnboarding(){
+  const name=document.getElementById('f-name').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const age=document.getElementById('f-age').value.trim();
+  const score=document.getElementById('f-score').value;
+  const purpose=document.getElementById('f-purpose').value;
+  const deadline=document.getElementById('f-deadline').value;
+  const hours=document.getElementById('f-hours').value;
+  const level=document.querySelector('#level-group .selected');
+  const source=document.querySelector('#source-group .selected');
+  if(!name||!email||!age||!score||!purpose||!deadline||!hours||!level||!source){
+    alert(currentLang==='pt'?'Por favor, preencha todos os campos obrigatórios (*).':'Please fill in all required fields (*).');
+    return;
+  }
+  document.getElementById('onboarding-page').style.display='none';
+  document.getElementById('paywall-page').style.display='block';
+  const isPremium=selectedPackage==='premium';
+  document.getElementById('paywall-plan-name').textContent=isPremium?'Smart Premium':'Smart';
+  document.getElementById('paywall-price').textContent=isPremium?'$12':'$5';
+  document.getElementById('paywall-brl').textContent=currentLang==='pt'?(isPremium?'~R$70 · pagamento único':'~R$30 · pagamento único'):(isPremium?'~R$70 · one-time payment':'~R$30 · one-time payment');
+  window.scrollTo({top:0});
+}
+
+function submitFeedback(){
+  const val=document.getElementById('feedback-input').value.trim();
+  if(!val)return;
+  document.getElementById('feedback-input').value='';
+  alert(currentLang==='pt'?'Obrigado pelo seu feedback! 🙏':'Thank you for your feedback! 🙏');
+}
+
+// Init lang
+setLang('pt');
+</script>
+</body>
+</html>
