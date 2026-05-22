@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termos de Uso — TSU! Test Score Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb; --ink: #1a1714; --ink2: #3d3830; --ink3: #7a7468;
+  --accent: #d4541a; --accent-dim: rgba(212,84,26,0.08);
+  --border: rgba(26,23,20,0.1); --card: #ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;}
+.lang-bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0.6rem 2rem;background:rgba(245,242,235,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.lang-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--ink);text-decoration:none;}
+.lang-logo span{color:var(--accent);}
+.lang-btns{display:flex;gap:6px;}
+.lang-btn{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:none;color:var(--ink3);transition:all 0.2s;}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent);}
+.lang-btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+.container{max-width:720px;margin:0 auto;padding:6rem 2rem 4rem;}
+.doc-header{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.doc-eyebrow{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;display:flex;align-items:center;gap:10px;}
+.doc-eyebrow::before{content:'';width:24px;height:1.5px;background:var(--accent);}
+.doc-title{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.doc-meta{font-size:13px;color:var(--ink3);}
+.doc-intro{background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-bottom:2.5rem;font-size:14px;color:var(--ink2);line-height:1.65;}
+.section{margin-bottom:2.5rem;}
+.section-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.4rem;}
+.section-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:0.75rem;color:var(--ink);}
+.section p{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-bottom:0.75rem;}
+.section p:last-child{margin-bottom:0;}
+.section ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:0.75rem;}
+.section ul li{font-size:14.5px;color:var(--ink2);line-height:1.7;padding-left:1.25rem;position:relative;}
+.section ul li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:12px;}
+.highlight{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:14px;color:var(--ink2);}
+.highlight strong{color:var(--ink);font-weight:600;}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
+.contact-box{background:var(--ink);border-radius:12px;padding:2rem;margin-top:2rem;}
+.contact-box h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--bg);margin-bottom:0.5rem;}
+.contact-box p{font-size:13.5px;color:rgba(245,242,235,0.6);line-height:1.6;}
+.contact-box a{color:var(--accent);text-decoration:none;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);text-decoration:none;margin-bottom:2rem;transition:color 0.2s;}
+.back-link:hover{color:var(--accent);}
+.lang-content{display:none;}
+.lang-content.active{display:block;}
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <a class="lang-logo" href="https://tsu-prep.com">TSU<span>!</span></a>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<div class="container">
+  <a class="back-link" href="https://tsu-prep.com">← Voltar ao site</a>
+
+  <!-- ===== PORTUGUÊS ===== -->
+  <div class="lang-content active" id="lang-pt">
+    <div class="doc-header">
+      <div class="doc-eyebrow">Documento legal</div>
+      <h1 class="doc-title">Termos de Uso</h1>
+      <div class="doc-meta">TSU! Test Score Up · tsu-prep.com · Última atualização: maio de 2025</div>
+    </div>
+
+    <div class="doc-intro">
+      Ao adquirir qualquer produto da plataforma TSU!, você concorda integralmente com os presentes Termos de Uso. Leia atentamente antes de efetuar sua compra.
+    </div>
+
+    <div class="section">
+      <div class="section-num">01</div>
+      <div class="section-title">Sobre a TSU!</div>
+      <p>A TSU! (Test Score Up) é uma plataforma de preparação para o exame TOEFL iBT, operada por Pierre-Louis Jay, pessoa física, com sede no Brasil. A TSU! não possui qualquer afiliação com a ETS (Educational Testing Service), detentora da marca registrada TOEFL®.</p>
+      <p>O conteúdo disponibilizado pela TSU! é de natureza educacional e informativa, desenvolvido com base na experiência pessoal do fundador e em metodologias de estudo reconhecidas.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">02</div>
+      <div class="section-title">Produtos e serviços</div>
+      <p>A TSU! oferece dois planos de preparação:</p>
+      <ul>
+        <li><strong>Smart (R$30):</strong> Acesso à plataforma interativa com exercícios personalizados, mock tests e plano de estudos adaptado ao perfil do cliente.</li>
+        <li><strong>Smart Premium (R$70):</strong> Inclui tudo do plano Smart, mais uma sessão individual de 45 minutos com um especialista da equipe TSU! e um plano personalizado entregue em até 48 horas.</li>
+      </ul>
+      <p>Os produtos são de natureza digital e o acesso é fornecido após confirmação do pagamento.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">03</div>
+      <div class="section-title">Política de reembolso</div>
+      <div class="highlight">
+        <strong>Prazo de reembolso: 24 horas após a confirmação do pagamento.</strong><br>
+        Solicitações de reembolso realizadas dentro deste prazo serão integralmente atendidas, sem necessidade de justificativa.
+      </div>
+      <p>Após o prazo de 24 horas contado a partir do horário de confirmação do pagamento registrado pela Stripe, não serão aceitas solicitações de reembolso, dado o caráter digital e imediato do produto entregue.</p>
+      <p>Para solicitar um reembolso dentro do prazo, entre em contato por email: <strong>contact@tsu-prep.com</strong>, informando seu nome completo, email de compra e o motivo da solicitação.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">04</div>
+      <div class="section-title">Acesso ao conteúdo</div>
+      <p>Após confirmação do pagamento, o cliente receberá por email o acesso à plataforma de preparação no prazo máximo de 24 horas úteis. Em caso de não recebimento, o cliente deve verificar sua caixa de spam e, se necessário, entrar em contato com a TSU! pelo email <strong>contact@tsu-prep.com</strong>.</p>
+      <p>O acesso concedido é pessoal e intransferível. É expressamente proibido compartilhar, redistribuir ou comercializar o conteúdo da plataforma.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">05</div>
+      <div class="section-title">Resultados e garantias</div>
+      <p>A TSU! não garante resultados específicos no exame TOEFL iBT. O desempenho no teste depende de múltiplos fatores individuais, incluindo nível de inglês prévio, dedicação aos estudos e condições do dia do exame.</p>
+      <p>O conteúdo e as estratégias disponibilizados são baseados em metodologias reconhecidas e na experiência do fundador, mas não constituem garantia de atingimento de score específico.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">06</div>
+      <div class="section-title">Proteção de dados (LGPD)</div>
+      <p>A TSU! coleta apenas os dados estritamente necessários para a personalização da preparação e para o processamento do pagamento. Os dados coletados no formulário de onboarding são utilizados exclusivamente para:</p>
+      <ul>
+        <li>Personalizar o plano de preparação do cliente</li>
+        <li>Entrar em contato para confirmar o acesso ao conteúdo</li>
+        <li>Enviar informações relevantes sobre o produto adquirido</li>
+      </ul>
+      <p>Os dados não são vendidos, compartilhados ou cedidos a terceiros. O cliente pode solicitar a exclusão de seus dados a qualquer momento pelo email <strong>contact@tsu-prep.com</strong>, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).</p>
+      <p>Os pagamentos são processados pela Stripe, Inc., que possui sua própria política de privacidade disponível em stripe.com/privacy.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">07</div>
+      <div class="section-title">Propriedade intelectual</div>
+      <p>Todo o conteúdo disponibilizado pela TSU! — incluindo textos, exercícios, mock tests, estratégias e materiais de estudo — é de propriedade exclusiva da TSU! e protegido pelas leis de propriedade intelectual aplicáveis.</p>
+      <p>É proibida a reprodução, distribuição ou comercialização do conteúdo sem autorização expressa e por escrito da TSU!.</p>
+      <p>TOEFL® é marca registrada da ETS (Educational Testing Service). A TSU! não possui qualquer vínculo ou aprovação da ETS.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">08</div>
+      <div class="section-title">Alterações nos termos</div>
+      <p>A TSU! reserva-se o direito de modificar os presentes Termos de Uso a qualquer momento. As alterações entram em vigor imediatamente após sua publicação nesta página. O uso continuado da plataforma após a publicação de alterações constitui aceite dos novos termos.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">09</div>
+      <div class="section-title">Foro e legislação aplicável</div>
+      <p>Os presentes Termos de Uso são regidos pela legislação brasileira. Eventuais disputas serão submetidas ao foro da comarca de Brasília, Distrito Federal, Brasil, com renúncia expressa a qualquer outro foro, por mais privilegiado que seja.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="contact-box">
+      <h3>Dúvidas sobre os Termos de Uso?</h3>
+      <p>Entre em contato pelo email <a href="mailto:contact@tsu-prep.com">contact@tsu-prep.com</a>. Respondemos em até 48 horas úteis.</p>
+    </div>
+  </div>
+
+  <!-- ===== ENGLISH ===== -->
+  <div class="lang-content" id="lang-en">
+    <div class="doc-header">
+      <div class="doc-eyebrow">Legal document</div>
+      <h1 class="doc-title">Terms of Use</h1>
+      <div class="doc-meta">TSU! Test Score Up · tsu-prep.com · Last updated: May 2025</div>
+    </div>
+
+    <div class="doc-intro">
+      By purchasing any product from the TSU! platform, you fully agree to these Terms of Use. Please read carefully before making your purchase.
+    </div>
+
+    <div class="section">
+      <div class="section-num">01</div>
+      <div class="section-title">About TSU!</div>
+      <p>TSU! (Test Score Up) is a TOEFL iBT preparation platform operated by Pierre-Louis Jay, an individual, based in Brazil. TSU! has no affiliation with ETS (Educational Testing Service), the owner of the TOEFL® registered trademark.</p>
+      <p>The content provided by TSU! is educational and informational in nature, developed based on the founder's personal experience and recognized study methodologies.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">02</div>
+      <div class="section-title">Products and services</div>
+      <p>TSU! offers two preparation plans:</p>
+      <ul>
+        <li><strong>Smart ($5):</strong> Access to the interactive platform with personalized exercises, mock tests and a study plan adapted to the client's profile.</li>
+        <li><strong>Smart Premium ($12):</strong> Includes everything in the Smart plan, plus a 45-minute individual session with a TSU! team specialist and a personalized plan delivered within 48 hours.</li>
+      </ul>
+      <p>Products are digital in nature and access is provided after payment confirmation.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">03</div>
+      <div class="section-title">Refund policy</div>
+      <div class="highlight">
+        <strong>Refund deadline: 24 hours after payment confirmation.</strong><br>
+        Refund requests made within this period will be fully honored, with no justification required.
+      </div>
+      <p>After the 24-hour period from the payment confirmation time recorded by Stripe, no refund requests will be accepted, given the digital and immediate nature of the product delivered.</p>
+      <p>To request a refund within the deadline, contact us by email: <strong>contact@tsu-prep.com</strong>, providing your full name, purchase email and reason for the request.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">04</div>
+      <div class="section-title">Content access</div>
+      <p>After payment confirmation, the client will receive access to the preparation platform by email within a maximum of 24 business hours. If not received, the client should check their spam folder and, if necessary, contact TSU! at <strong>contact@tsu-prep.com</strong>.</p>
+      <p>The access granted is personal and non-transferable. It is expressly prohibited to share, redistribute or commercialize the platform content.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">05</div>
+      <div class="section-title">Results and guarantees</div>
+      <p>TSU! does not guarantee specific results on the TOEFL iBT exam. Test performance depends on multiple individual factors, including prior English level, study dedication and test day conditions.</p>
+      <p>The content and strategies provided are based on recognized methodologies and the founder's experience, but do not constitute a guarantee of achieving a specific score.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">06</div>
+      <div class="section-title">Data protection</div>
+      <p>TSU! collects only the data strictly necessary for preparation personalization and payment processing. Data collected in the onboarding form is used exclusively to:</p>
+      <ul>
+        <li>Personalize the client's preparation plan</li>
+        <li>Contact the client to confirm content access</li>
+        <li>Send relevant information about the purchased product</li>
+      </ul>
+      <p>Data is not sold, shared or transferred to third parties. The client may request deletion of their data at any time by emailing <strong>contact@tsu-prep.com</strong>.</p>
+      <p>Payments are processed by Stripe, Inc., which has its own privacy policy available at stripe.com/privacy.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">07</div>
+      <div class="section-title">Intellectual property</div>
+      <p>All content provided by TSU! — including texts, exercises, mock tests, strategies and study materials — is the exclusive property of TSU! and protected by applicable intellectual property laws.</p>
+      <p>Reproduction, distribution or commercialization of the content without express written authorization from TSU! is prohibited.</p>
+      <p>TOEFL® is a registered trademark of ETS (Educational Testing Service). TSU! has no connection with or endorsement from ETS.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">08</div>
+      <div class="section-title">Changes to terms</div>
+      <p>TSU! reserves the right to modify these Terms of Use at any time. Changes take effect immediately upon publication on this page. Continued use of the platform after publication of changes constitutes acceptance of the new terms.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-num">09</div>
+      <div class="section-title">Governing law</div>
+      <p>These Terms of Use are governed by Brazilian law. Any disputes will be submitted to the courts of Brasília, Federal District, Brazil.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="contact-box">
+      <h3>Questions about the Terms of Use?</h3>
+      <p>Contact us at <a href="mailto:contact@tsu-prep.com">contact@tsu-prep.com</a>. We respond within 48 business hours.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function setLang(lang){
+  document.querySelectorAll('.lang-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('lang-'+lang).classList.add('active');
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+}
+</script>
+</body>
+</html>
