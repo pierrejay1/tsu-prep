@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSU! Prep - Pedido Confirmado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f2eb;
+      --bg2: #edeae1;
+      --ink: #1a1714;
+      --ink2: #3d3830;
+      --ink3: #7a7468;
+      --accent: #d4541a;
+      --accent2: #e8823e;
+      --accent-dim: rgba(212,84,26,0.08);
+      --gold: #c8a63e;
+      --border: rgba(26,23,20,0.1);
+      --border2: rgba(26,23,20,0.06);
+      --white: #faf8f4;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── LANG BAR ── */
+    .lang-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0.6rem 2rem;
+      background: rgba(245,242,235,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .lang-btn {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+      color: var(--ink3);
+      transition: all 0.2s;
+      margin-left: 6px;
+    }
+    .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .lang-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 1.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* background circles like hero */
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .bg-circle-1 {
+      width: 500px; height: 500px;
+      background: var(--accent);
+      right: -120px; top: -80px;
+    }
+    .bg-circle-2 {
+      width: 300px; height: 300px;
+      background: var(--gold);
+      left: -80px; bottom: 60px;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ── CHECK ANIMATION ── */
+    .check-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.7s ease both;
+    }
+    .check-circle {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 0 rgba(212,84,26,0.3);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    .check-circle svg {
+      width: 36px; height: 36px;
+      stroke: white;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .check-path {
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: drawCheck 0.5s 0.3s ease forwards;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212,84,26,0.3); }
+      50% { box-shadow: 0 0 0 16px rgba(212,84,26,0); }
+    }
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    .eyebrow-line { width: 24px; height: 1.5px; background: var(--accent); }
+
+    /* ── TITLE ── */
+    .title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+    .title em { font-style: normal; color: var(--accent); }
+
+    /* ── CARDS ── */
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 2.5rem 0;
+      text-align: left;
+      animation: fadeUp 0.7s 0.25s ease both;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .card-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .card-icon svg {
+      width: 18px; height: 18px;
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .card-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 4px;
+    }
+    .card-text {
+      font-size: 14px;
+      color: var(--ink2);
+      line-height: 1.6;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+      animation: fadeUp 0.7s 0.35s ease both;
+    }
+
+    /* ── CONTACT ── */
+    .contact-block {
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .contact-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 0.5rem;
+    }
+    .contact-text {
+      font-size: 14px;
+      color: var(--ink2);
+      line-height: 1.6;
+    }
+    .contact-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .contact-link:hover { opacity: 0.75; }
+
+    /* ── BACK LINK ── */
+    .back-wrap {
+      margin-top: 2.5rem;
+      animation: fadeUp 0.7s 0.45s ease both;
+    }
+    .back-link {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link svg {
+      width: 14px; height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      color: var(--ink3);
+      letter-spacing: 0.05em;
+      border-top: 1px solid var(--border2);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      main { padding: 7rem 1.2rem 3rem; }
+      .bg-circle-1 { width: 300px; height: 300px; right: -80px; }
+      .bg-circle-2 { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LANG BAR -->
+  <div class="lang-bar">
+    <button class="lang-btn active" onclick="setLang('pt')" id="btn-pt">PT</button>
+    <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+  </div>
+
+  <main>
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+
+    <div class="content">
+
+      <!-- CHECK -->
+      <div class="check-wrap">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24">
+            <polyline class="check-path" points="4,12 9,17 20,6"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- EYEBROW -->
+      <div class="eyebrow">
+        <span class="eyebrow-line"></span>
+        <span data-pt="Pagamento confirmado" data-en="Payment confirmed">Pagamento confirmado</span>
+        <span class="eyebrow-line"></span>
+      </div>
+
+      <!-- TITLE -->
+      <h1 class="title">
+        <span data-pt="Obrigado pela" data-en="Thank you for">Obrigado pela</span>
+        <em data-pt="confiança." data-en="your trust.">confiança.</em>
+      </h1>
+
+      <!-- CARDS -->
+      <div class="cards">
+
+        <!-- Card 1: Algo en cours -->
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"/>
+              <polyline points="12,7 12,12 15,15"/>
+            </svg>
+          </div>
+          <div>
+            <div class="card-label" data-pt="Em preparação" data-en="In preparation">Em preparação</div>
+            <div class="card-text" data-pt="Nosso algoritmo já está analisando suas respostas para montar o prep mais adaptado ao seu perfil. Esse processo pode levar algum tempo, pois leva o cuidado que você merece." data-en="Our algorithm is already analyzing your answers to build the prep best suited to your profile. This process may take some time, as it takes the care you deserve.">
+              Nosso algoritmo já está analisando suas respostas para montar o prep mais adaptado ao seu perfil. Esse processo pode levar algum tempo, pois leva o cuidado que você merece.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Envio por email -->
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="card-label" data-pt="Entrega por email" data-en="Email delivery">Entrega por email</div>
+            <div class="card-text" data-pt="Seu plano personalizado será enviado diretamente para o email que você informou no formulário. Fique de olho na caixa de entrada e também no spam, por precaução." data-en="Your personalized plan will be sent directly to the email you provided in the form. Keep an eye on your inbox and your spam folder, just in case.">
+              Seu plano personalizado será enviado diretamente para o email que você informou no formulário. Fique de olho na caixa de entrada e também no spam, por precaução.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Premium only -->
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div>
+            <div class="card-label" data-pt="Pacote Smart Premium" data-en="Smart Premium Pack">Pacote Smart Premium</div>
+            <div class="card-text" data-pt="Se você adquiriu o pacote Premium, nossa equipe entrará em contato por email para confirmar a data e horário da sua sessão individual e dar continuidade ao seu acompanhamento personalizado." data-en="If you purchased the Premium pack, our team will reach out by email to confirm the date and time of your individual session and continue your personalized follow-up.">
+              Se você adquiriu o pacote Premium, nossa equipe entrará em contato por email para confirmar a data e horário da sua sessão individual e dar continuidade ao seu acompanhamento personalizado.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- CONTACT -->
+      <div class="contact-block">
+        <div class="contact-label" data-pt="Dúvidas ou problemas?" data-en="Questions or issues?">Dúvidas ou problemas?</div>
+        <p class="contact-text" data-pt="Entre em contato com a gente por email, respondemos o mais rápido possível." data-en="Reach out to us by email, we reply as quickly as possible.">
+          Entre em contato com a gente por email, respondemos o mais rápido possível.
+        </p>
+        <p class="contact-text" style="margin-top:0.5rem;">
+          <a class="contact-link" href="mailto:contact@tsu-prep.com">contact@tsu-prep.com</a>
+        </p>
+      </div>
+
+      <!-- BACK -->
+      <div class="back-wrap">
+        <a class="back-link" href="https://tsu-prep.com">
+          <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
+          <span data-pt="Voltar ao site" data-en="Back to site">Voltar ao site</span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    © 2025 TSU! Prep &nbsp;·&nbsp; <span data-pt="Todos os direitos reservados" data-en="All rights reserved">Todos os direitos reservados</span>
+  </footer>
+
+  <script>
+    function setLang(lang) {
+      document.querySelectorAll('[data-pt],[data-en]').forEach(el => {
+        if (el.dataset[lang] !== undefined) el.textContent = el.dataset[lang];
+      });
+      document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.documentElement.lang = lang;
+    }
+    // Default PT
+    setLang('pt');
+  </script>
+
+</body>
+</html>
