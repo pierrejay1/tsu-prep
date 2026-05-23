@@ -9,50 +9,135 @@ exports.handler = async function(event) {
     'Content-Type': 'application/json'
   };
 
+  // Always return success to client — never block the payment flow
+  const ok = { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
+
   try {
     const data = JSON.parse(event.body);
 
-    // Map HTML form fields to Tally field names
-    const tallyPayload = {
-      formId: '44pByY',
-      fields: [
-        { label: 'Nome completo',              value: data.name      || '' },
-        { label: 'Idade',                      value: data.age       || '' },
-        { label: 'Gênero',                     value: data.gender    || '' },
-        { label: 'Email de Contato',           value: data.email     || '' },
-        { label: 'Telefone/Whatsapp',          value: data.phone     || '' },
-        { label: 'Anos falando inglês',        value: data.years     || '' },
-        { label: 'Nível atual estimado',       value: data.level     || '' },
-        { label: 'Score mínimo desejado',      value: data.score     || '' },
-        { label: 'Finalidade do teste',        value: data.purpose   || '' },
-        { label: 'Prazo até o Teste',          value: data.deadline  || '' },
-        { label: 'Horas disponíveis por dia',  value: data.hours     || '' },
-        { label: 'Pontos fortes em inglês',    value: data.strengths || '' },
-        { label: 'Pontos fracos em inglês',    value: data.weaknesses|| '' },
-        { label: 'Um hobby seu',               value: data.hobby     || '' },
-        { label: 'Algo que você nao gosta de fazer', value: data.dislike || '' },
-        { label: 'Como nos conheceu?',         value: data.source    || '' },
-        { label: 'Plano',                      value: data.plan      || '' },
-      ]
+    // ── 1. Build JWT ──────────────────────────────────────────────────────────
+    const serviceEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+    const rawKey       = process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
+    const sheetId      = process.env.GOOGLE_SHEET_ID;
+
+    const now     = Math.floor(Date.now() / 1000);
+    const payload = {
+      iss  : serviceEmail,
+      scope: 'https://www.googleapis.com/auth/spreadsheets',
+      aud  : 'https://oauth2.googleapis.com/token',
+      iat  : now,
+      exp  : now + 3600,
     };
 
-    const tallyRes = await fetch('https://api.tally.so/forms/44pByY/submissions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(tallyPayload)
+    // Helper: base64url encode
+    const b64url = str =>
+      Buffer.from(str).toString('base64')
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+    const header  = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+    const body    = b64url(JSON.stringify(payload));
+    const signing = `${header}.${body}`;
+
+    // Sign with RS256 using Node's built-in crypto
+    const { createSign } = require('crypto');
+    const sign = createSign('RSA-SHA256');
+    sign.update(signing);
+    const signature = sign.sign(rawKey, 'base64')
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+    const jwt = `${signing}.${signature}`;
+
+    // ── 2. Exchange JWT for access token ──────────────────────────────────────
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body   : `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`,
     });
 
-    if (!tallyRes.ok) {
-      const errText = await tallyRes.text();
-      console.error('Tally error:', tallyRes.status, errText);
-      // Still return success to user — don't block payment flow
+    if (!tokenRes.ok) {
+      console.error('Token error:', await tokenRes.text());
+      return ok;
     }
 
-    return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
+    const { access_token } = await tokenRes.json();
+
+    // ── 3. Check if sheet is empty → write headers first ─────────────────────
+    const SHEET = 'Feuille 1';
+    const COLUMNS = [
+      'Timestamp', 'Plano', 'Nome completo', 'Idade', 'Gênero',
+      'Email', 'Telefone/Whatsapp', 'Anos falando inglês',
+      'Nível atual estimado', 'Score mínimo desejado',
+      'Finalidade do teste', 'Prazo até o Teste',
+      'Horas disponíveis por dia', 'Pontos fortes', 'Pontos fracos',
+      'Hobby', 'Não gosta de fazer', 'Como nos conheceu?'
+    ];
+
+    const checkRes = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(SHEET + '!A1:R1')}`,
+      { headers: { Authorization: `Bearer ${access_token}` } }
+    );
+    const checkData = await checkRes.json();
+    const isEmpty = !checkData.values || checkData.values.length === 0;
+
+    if (isEmpty) {
+      await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(SHEET + '!A1')}:append?valueInputOption=RAW`,
+        {
+          method : 'POST',
+          headers: {
+            Authorization : `Bearer ${access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ values: [COLUMNS] }),
+        }
+      );
+    }
+
+    // ── 4. Append the new submission row ──────────────────────────────────────
+    const timestamp = new Date().toISOString();
+    const row = [
+      timestamp,
+      data.plan       || '',
+      data.name       || '',
+      data.age        || '',
+      data.gender     || '',
+      data.email      || '',
+      data.phone      || '',
+      data.years      || '',
+      data.level      || '',
+      data.score      || '',
+      data.purpose    || '',
+      data.deadline   || '',
+      data.hours      || '',
+      data.strengths  || '',
+      data.weaknesses || '',
+      data.hobby      || '',
+      data.dislike    || '',
+      data.source     || '',
+    ];
+
+    const appendRes = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(SHEET + '!A1')}:append?valueInputOption=RAW`,
+      {
+        method : 'POST',
+        headers: {
+          Authorization : `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ values: [row] }),
+      }
+    );
+
+    if (!appendRes.ok) {
+      console.error('Sheets append error:', await appendRes.text());
+    } else {
+      console.log('Row appended successfully:', data.email, data.plan);
+    }
+
+    return ok;
 
   } catch (err) {
     console.error('Function error:', err);
-    // Still return success — don't block payment flow on Tally errors
-    return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
+    return ok;
   }
 };
