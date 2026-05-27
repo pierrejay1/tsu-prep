@@ -1,3 +1,62 @@
+// ── Matching algorithm ────────────────────────────────────────────────────────
+// Barème défini dans CLAUDE_matching.md
+function computeScore(data) {
+  let total = 0;
+
+  // Nível atual estimado
+  const level = (data.level || '').toUpperCase().trim();
+  if      (level.startsWith('C1')) total += 35;
+  else if (level.startsWith('B2')) total += 28;
+  else if (level.startsWith('B1')) total += 20;
+  else if (level.startsWith('A2')) total += 12;
+  else if (level.startsWith('A1')) total += 5;
+
+  // Score mínimo desejado
+  const score = parseInt(data.score, 10);
+  if (!isNaN(score)) {
+    if      (score >= 111) total += 25;
+    else if (score >= 101) total += 20;
+    else if (score >= 91)  total += 15;
+    else if (score >= 81)  total += 8;
+    else if (score >= 71)  total += 3;
+    // 60-70 = 0pts
+  }
+
+  // Horas disponíveis por dia
+  const hours = parseFloat((data.hours || '').toString().replace(',', '.'));
+  if (!isNaN(hours)) {
+    if      (hours <= 0.5) total += 20;
+    else if (hours <= 1)   total += 16;
+    else if (hours <= 2)   total += 11;
+    else if (hours <= 3)   total += 6;
+    else                   total += 2;  // 4h+
+  }
+
+  // Prazo até o Teste
+  const prazo = (data.deadline || '').toLowerCase();
+  if      (/\<\s*1|menos.*1\s*sem|menos.*uma\s*sem/.test(prazo)) total += 12;
+  else if (/1[\s-]?a?[\s-]?2\s*sem|1-2/.test(prazo))             total += 9;
+  else if (/2[\s-]?a?[\s-]?4\s*sem|2-4/.test(prazo))             total += 6;
+  else if (/1[\s-]?a?[\s-]?3\s*m|1-3\s*m/.test(prazo))          total += 3;
+  // 3+ mois = 0pts
+
+  // Anos falando inglês
+  const anosStr = (data.years || '').toString().toLowerCase().trim();
+  const anosNum = parseFloat(anosStr);
+  if      (/10\s*\+|10\s*ou\s*mais|10\s*ans\s*\+/.test(anosStr) || anosNum >= 10)                       total += 8;
+  else if (/7[\s-]?a?[\s-]?10/.test(anosStr) || (anosNum >= 7 && anosNum < 10))                         total += 7;
+  else if (/4[\s-]?a?[\s-]?6/.test(anosStr)  || (anosNum >= 4 && anosNum <= 6))                         total += 5;
+  else if (/2[\s-]?a?[\s-]?3/.test(anosStr)  || (anosNum >= 2 && anosNum <= 3))                         total += 3;
+  else if (/0[\s-]?a?[\s-]?1/.test(anosStr)  || (anosNum >= 0 && anosNum <= 1))                         total += 1;
+
+  // Catégories par tranches de points
+  if      (total >= 74) return 'Avancé';
+  else if (total >= 58) return 'Intermédiaire Avancé';
+  else if (total >= 39) return 'Intermédiaire';
+  else if (total >= 29) return 'Débutant Avancé';
+  else                  return 'Débutant';
+}
+
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -69,11 +128,12 @@ exports.handler = async function(event) {
       'Nível atual estimado', 'Score mínimo desejado',
       'Finalidade do teste', 'Prazo até o Teste',
       'Horas disponíveis por dia', 'Pontos fortes', 'Pontos fracos',
-      'Hobby', 'Não gosta de fazer', 'Como nos conheceu?'
+      'Hobby', 'Não gosta de fazer', 'Como nos conheceu?',
+      'Nível Recomendado'
     ];
 
     const checkRes = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(SHEET + '!A1:R1')}`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(SHEET + '!A1:S1')}`,
       { headers: { Authorization: `Bearer ${access_token}` } }
     );
     const checkData = await checkRes.json();
@@ -95,6 +155,7 @@ exports.handler = async function(event) {
 
     // ── 4. Append the new submission row ──────────────────────────────────────
     const timestamp = new Date().toISOString();
+    const nivel_recomendado = computeScore(data);
     const row = [
       timestamp,
       data.plan       || '',
@@ -114,6 +175,7 @@ exports.handler = async function(event) {
       data.hobby      || '',
       data.dislike    || '',
       data.source     || '',
+      nivel_recomendado,
     ];
 
     const appendRes = await fetch(
